@@ -9,7 +9,6 @@ public class StepDefinitions {
     // $$*TODO* explain what this step does$$
     @Given("an example scenario")
     public void anExampleScenario() {
-        //testing
     }
 
     // $$*TODO* explain what this step does$$
