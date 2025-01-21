@@ -14,7 +14,7 @@ public class OpenMoodle {
     protected WebDriver driver;
     private WebDriverWait wait;
 
-    public void initSessionAsAdmin(String webDriver, String path) {
+    public void initSession(String webDriver, String path) {
         System.setProperty(webDriver, path);
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(40));
@@ -23,7 +23,7 @@ public class OpenMoodle {
         System.out.println("--------------- INITIALIZING MOODLE TEST - OPENING WEBPAGE ---------------");
     }
 
-    public void loginAsTeacher(String username, String password) {
+    public void login(String username, String password) {
         try {
             WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/nav/div/div[2]/div/div/span")));
             loginButton.click();
@@ -137,6 +137,92 @@ public class OpenMoodle {
         userInGroup.click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='remove']"))).click();
     }
+
+    public int currentPage() {
+        try {
+            // Step 1: Click on test
+            WebElement test = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("/html/body/div[2]/div[4]/div/div[3]/div/section/div/div/div/ul/li[2]/div/div[2]/ul/li/div/div[2]/div[2]/div/div/a")
+            ));
+            test.click();
+            System.out.println("test opened");
+
+            // Step 2: Handle quiz attempt options
+            WebElement attemptButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("/html/body/div[2]/div[4]/div/div[2]/div/section/div[2]/div[1]/div/div/form/button")
+            ));
+            attemptButton.click();
+            System.out.println("Attempt quiz button clicked");
+
+            // Step 3: Get the current page number from the URL
+            System.out.println("Fetching current page number from URL...");
+            String currentUrl = driver.getCurrentUrl();
+            int currentPage = extractPageNumberFromUrl(currentUrl);
+            System.out.println("Current Page number: " + currentPage);
+            if (currentPage == -1) {
+                throw new IllegalStateException("Failed to determine the current page from the URL: " + currentUrl);
+            }
+            return currentPage;
+
+        } catch (Exception e) {
+            System.err.println("Error during quiz attempt: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int nextPage() {
+        try {
+            // Step 1: Click on Next Page button
+            WebElement nextPage = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("/html/body/div[2]/div[5]/div/div[2]/div/section/div[2]/form/div/div[2]/input")
+            ));
+            nextPage.click();
+            System.out.println("Next Page button clicked");
+
+            // Step 2: Verify navigation to the next page
+            System.out.println("Fetching new page number from URL...");
+            String newUrl = driver.getCurrentUrl();
+            int newPage = extractPageNumberFromUrl(newUrl);
+            System.out.println("New Page number: " + newPage);
+
+
+            // Step 3: Click on Previous Page button
+            WebElement previousPage = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("/html/body/div[2]/div[5]/div/div[2]/div/section/div[2]/form/div/div[2]/input[1]")
+            ));
+            previousPage.click();
+            System.out.println("navigated back to the previous page.");
+
+            return newPage;
+
+        } catch (Exception e) {
+            System.err.println("Error during quiz attempt: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+
+
+
+    // Helper method to extract page number from URL
+    private int extractPageNumberFromUrl(String url) {
+        try {
+            if (url.contains("page=")) {
+                // Extract page number from "page=" parameter
+                String pageParam = url.split("page=")[1].split("&")[0];
+                return Integer.parseInt(pageParam);
+            } else if (url.matches(".*\\d+.*")) {
+                return 0;
+            }
+        } catch (Exception e) {
+            System.err.println("Error extracting page number from URL: " + e.getMessage());
+        }
+        return -1; // Return -1 if page number is not found
+    }
+
+
 
     public void closeSession() {
         if (driver != null) {
