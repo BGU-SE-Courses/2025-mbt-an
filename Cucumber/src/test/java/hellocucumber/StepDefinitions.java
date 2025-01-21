@@ -1,46 +1,47 @@
 package hellocucumber;
 
 import io.cucumber.java.en.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StepDefinitions {
 
-    private String student;
-    private int currentPage;
+    private OpenMoodle moodle;
+    private int initialGroupSize;
 
-    @Given("the student {string} is in the extra-time group")
-    public void theStudentIsInTheExtraTimeGroup(String studentName) {
-        student = studentName;
-        System.out.println(student + " is added to the extra-time group.");
+    @Given("the teacher logs into Moodle as {string} with password {string}")
+    public void theTeacherLogsIntoMoodleAs(String username, String password) {
+        moodle = new OpenMoodle();
+        moodle.initSessionAsAdmin("webdriver.chrome.driver", "../Selenium/chromedriver");
+        moodle.loginAsTeacher(username, password);
     }
 
-    @When("the teacher removes {string} from the extra-time group")
-    public void theTeacherRemovesFromTheExtraTimeGroup(String studentName) {
-        if (student.equals(studentName)) {
-            student = null;
-        }
+    @When("the teacher navigates to the course")
+    public void theTeacherNavigatesToTheCourse() {
+        moodle.navigateToCourse();
     }
 
-    @Then("{string} is no longer part of the extra-time group")
-    public void isNoLongerPartOfTheExtraTimeGroup(String studentName) {
-        assertNull(student, studentName + " should not be part of the extra-time group.");
+    @When("the teacher selects the Extra-Time Group")
+    public void theTeacherSelectsTheExtraTimeGroupAndFetchesTheInitialGroupSize() {
+        moodle.navigateToExtraTimeGroupAndFetchSize();
+        initialGroupSize = moodle.getGroupSize();
     }
 
-    @Given("the student is on page {int} of the test")
-    public void theStudentIsOnPageOfTheTest(int pageNumber) {
-        currentPage = pageNumber;
+    @When("the teacher removes a student from the group")
+    public void theTeacherRemovesAStudentFromTheGroup() {
+        moodle.removeStudentFromGroup();
     }
 
-    @When("the student clicks on the {string} button")
-    public void theStudentClicksOnTheButton(String button) {
-        if (button.equals("Next")) {
-            currentPage++;
-        }
+    @When("the teacher returns to the Groups menu")
+    public void theTeacherReturnsToTheGroupsMenu() {
+        moodle.returnToGroupsMenu();
     }
 
-    @Then("the student is on the next page {int} of the test")
-    public void theStudentIsOnTheNextPageOfTheTest(int expectedPage) {
-        assertEquals(expectedPage, currentPage, "The student should be on the expected page.");
+    @Then("the group size decreases by {int}")
+    public void theGroupSizeDecreasesBy(int decrement) {
+        int updatedGroupSize = moodle.getGroupSize();
+        assertEquals(initialGroupSize - decrement, updatedGroupSize, "Group size did not decrease correctly.");
+        moodle.closeSession();
     }
 }
+
+
