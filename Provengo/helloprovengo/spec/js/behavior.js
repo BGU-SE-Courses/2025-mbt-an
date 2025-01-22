@@ -1,19 +1,48 @@
-/* @provengo summon selenium */
 
-/**
- * This story opens a new browser window, goes to google.com, and searches for "Pizza".
- */
-bthread('Search', function () {
-  let s = new SeleniumSession('search').start(URL)
-  composeQuery(s, { text: 'Pizza' })
-  startSearch(s)
-})
 
-/**
- * This story opens a new browser window, goes to google.com, and searches for "Pasta" using the "I Feel Lucky" feature.
- */
-bthread('Feeling lucky', function () {
-  let s = new SeleniumSession('lucky').start(URL)
-  composeQuery(s, { text: 'Pasta' })
-  feelLucky(s)
-})
+bthread('setupAdmin', function () {
+    let adminSession = new SeleniumSession('adminSession', 'chrome'); // Initialize the admin session
+    adminSession.start(BASE_URL); // Start the session at the base URL
+
+    // Admin login action
+    adminSession.adminLogin_1();
+
+    // Signal that the admin login is complete
+    request(Event('admin_login_complete'));
+});
+
+
+bthread('setupStudent', function () {
+    let studentSession = new SeleniumSession('studentSession', 'chrome'); // Initialize the admin session
+    studentSession.start(BASE_URL); // Start the session at the base URL
+    studentSession.studentLogin_1();
+    request(Event('student_login_complete'));
+});
+
+bthread('Student moving to the next page in a test', function () {
+//    waitFor(Event('student_login_complete'));
+    let studentSession1 = new SeleniumSession('studentSession1', 'chrome'); // Initialize the admin session
+    studentSession1.start(BASE_URL); // Start the session at the base URL
+    studentSession1.studentLogin_1();
+    studentSession1.studentGoToCourse();
+    studentSession1.studentGoToQuiz();
+    request(Event('student_moving_complete'));
+});
+
+
+bthread('Admin removing student from extra-time group', function(){
+    waitFor(Event('admin_login_complete'));
+    let adminSession1 = new SeleniumSession('adminSession1', 'chrome'); // Initialize the admin session
+    adminSession1.start(BASE_URL); // Start the session at the base URL
+    adminSession1.adminLogin_1();
+    adminSession1.studentGoToCourse();
+    adminSession1.adminGoToGroup();
+    adminSession1.adminRemoveStudent();
+    request(Event('admin_removing_complete'));
+});
+
+
+bthread('coordinateActions', function () {
+    // Wait for both setup tasks to complete
+    sync({ waitForAll: [Event('admin_removing_complete'), Event('student_moving_complete')] });
+});
