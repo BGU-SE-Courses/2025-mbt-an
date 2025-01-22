@@ -1,4 +1,4 @@
-# Testing $$*TODO* software name$$ using Cucumber
+# Testing https://github.com/moodle/moodle using Cucumber
 This directory contains the cucumber files for testing the Moodle module of the https://github.com/moodle/moodle application.
 
 ## Running the tests
