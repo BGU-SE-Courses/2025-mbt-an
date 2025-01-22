@@ -2,31 +2,54 @@
 This is a repository for the system-testing assignment of the Software Quality Engineering course at the [Ben-Gurion University](https://in.bgu.ac.il/), Israel.
 
 ## Assignment Description
-In this assignment, we tested an open-source software called [$$*TODO* software name$$](https://address-of-the-project.com).
+In this assignment, we tested an open-source software called [Moodle](https://github.com/moodle/moodle).
 
-$$*TODO* Add some general description about the software$$
+Moodle is a widely used learning management system (LMS) that allows educators, administrators, and learners to create and access educational content in a flexible and customizable way. It supports features such as creating courses, managing users, uploading resources, conducting quizzes, tracking progress, and much more. Its extensible nature and modular design make it a popular choice for online education.
 
 ## Installation
-$$*TODO* Write instructions on how to install the software and prepare the testing environment$$
+1. **Download Moodle**:  
+   - Visit the official Moodle GitHub repository: [https://github.com/moodle/moodle](https://github.com/moodle/moodle).  
+   - Download the latest release as a `.zip` file.  
+   - Extract the downloaded folder to your local system.  
 
+2. **Install XAMPP**:  
+   Download and install [XAMPP](https://www.apachefriends.org/download.html) with the required PHP version (>=8.1).  
+
+3. **Move Moodle to XAMPP's Root Directory**:  
+   - Navigate to your XAMPP installation directory.  
+   - Move the extracted Moodle folder into the `htdocs` directory.  
+
+4. **Create a Database for Moodle**:  
+   - Open the XAMPP control panel and start the **MySQL** service.  
+   - Open your browser and go to `http://localhost/phpmyadmin`.  
+   - Create a new database named `moodle` and set the character set to `utf8mb4_unicode_ci`.  
+
+5. **Configure Moodle**:  
+   - Open your browser and navigate to `http://127.0.0.1/moodle`.  
+   - Follow the setup instructions:  
+     - Enter the database name as `moodle`.  
+     - Use `localhost` as the database host and leave the database user as `root` with no password (default XAMPP settings).  
+
+6. **Start XAMPP Services**:  
+   - Open the XAMPP control panel and start **Apache** and **MySQL**.  
+
+7. **Access Moodle**:  
+   - Open your browser and go to `http://127.0.0.1/moodle` to access Moodle. 
+    
 ## What we tested
-$$*TODO* Add a description of the module and the user stories that you chose to test.
-For example, in the case of the Moodle example, you can write something like this:
+In this assignment, we tested the following use cases in Moodle:
 
-We tested the quiz module that allows for creating and taking quizzes. We chose to test the following user stories: 
+*User story:* A teacher removes a student from an extra-time group.
 
-*User story:* A teacher adds a new quiz to the course with two yes/no questions
+*Preconditions:* There is a course with a teacher, and the teacher has assigned a student to a group that allows extra time during tests.
 
-*Preconditions:* There is a course with a teacher
+*Expected outcome:* The student is successfully removed from the group and no longer receives extra time during tests.
 
-*Expected outcome:* The quiz is added to the course.
+*User story:* A student moves to the next page in a test.
 
-*User story:* A students attempts a quiz and answers correctly.
+*Preconditions:* There is a course with a test containing multiple pages, and the student is actively taking the test.
 
-*Preconditions:* There is a course with a quiz with two yes/no questions and the quiz grade is calculated automatically and the grade is visible to the students upon submission.
-
-*Expected outcome:* The student receives 100.
-$$
+*Expected outcome:* The student is able to navigate to the next page in the test without any issues.
 
 ## How we tested
 We used two different testing methods:

@@ -139,6 +139,7 @@ public class OpenMoodle {
 
 
     public void removeStudentFromGroup() {
+        System.out.println("Removing student from the group...");
         // Step 1: Click on the Add/Remove Users button
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='showaddmembersform']"))).click();
         System.out.println("Add/Remove Users button clicked.");
@@ -155,6 +156,7 @@ public class OpenMoodle {
     }
 
     public void returnStudentBackToGroup() {
+        System.out.println("Adding student back to the group...");
         try {
             // Step 1: Click on the Add/Remove Users button
             WebElement addRemoveUsersButton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -174,7 +176,7 @@ public class OpenMoodle {
                     By.xpath("//*[@id=\"add\"]")
             ));
             addButton.click();
-            System.out.println("User successfully added back to the group.");
+            System.out.println("Student successfully added back to the group.");
         } catch (Exception e) {
             System.err.println("Error while returning the student back to the group: " + e.getMessage());
             e.printStackTrace();
