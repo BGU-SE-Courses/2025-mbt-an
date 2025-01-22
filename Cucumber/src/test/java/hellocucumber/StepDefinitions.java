@@ -9,7 +9,7 @@ public class StepDefinitions {
     private int initialGroupSize;
     private int initialPageNumber;
 
-    @Given("the teacher logs into Moodle as {string} with password {string}")
+    @Given("the user logs into Moodle as {string} with password {string}")
     public void theTeacherLogsIntoMoodleAs(String username, String password) {
         moodle = new OpenMoodle();
         moodle.initSession("webdriver.chrome.driver", "../Selenium/chromedriver");
@@ -39,28 +39,25 @@ public class StepDefinitions {
 
     @Then("the extra-time group size decreases by {int}")
     public void theGroupSizeDecreasesBy(int decrement) {
+        System.out.print("The new ");
         int updatedGroupSize = moodle.getGroupSize();
         assertEquals(initialGroupSize - decrement, updatedGroupSize, "Group size did not decrease correctly.");
+        moodle.returnStudentBackToGroup();
         moodle.closeSession();
     }
 
-    @Given("the student logs into Moodle as {string} with password {string}")
-    public void theUserLogsIntoMoodleAs(String username, String password) {
-        moodle = new OpenMoodle();
-        moodle.initSession("webdriver.chrome.driver", "../Selenium/chromedriver");
-        moodle.login(username, password);
-    }
+
 
     @When("the user attempts a quiz in the course")
     public void theUserAttemptsQuiz() {
         initialPageNumber = moodle.currentPage();
     }
 
-    @Then("the user successfully moves to the next page")
+    @Then("the user successfully moved to the next page")
     public void theUserSuccessfullyMovesToTheNextPage() {
         int pageNumber = moodle.nextPage();
         assertEquals(initialPageNumber + 1, pageNumber, "failed to move the next page.");
-        System.out.println("Navigation to the next page done successfully.");
+        moodle.backToPreviousPage();
         moodle.closeSession();
 
     }

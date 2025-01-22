@@ -25,21 +25,25 @@ public class OpenMoodle {
 
     public void login(String username, String password) {
         try {
+            // Step 1: Locate and click the login button on the homepage.
             WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/nav/div/div[2]/div/div/span")));
             loginButton.click();
             System.out.println("Login button clicked.");
 
+            // Step 2: Locate the username input field and enter the username.
             WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
             usernameField.sendKeys(username);
-            System.out.println("Entered username.");
+            System.out.println("Entered username: "+username);
 
+            // Step 3: Locate the password input field and enter the password.
             WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
             passwordField.sendKeys(password);
             System.out.println("Entered password.");
 
+            // Step 4: Locate and click the login button to log in.
             WebElement loginSubmitButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("loginbtn")));
             loginSubmitButton.click();
-            System.out.println("Login submitted.");
+            System.out.println("Loged in successfully.");
         } catch (Exception e) {
             System.err.println("Error during login: " + e.getMessage());
             e.printStackTrace();
@@ -49,13 +53,25 @@ public class OpenMoodle {
 
 
     public void navigateToCourse() {
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/nav/div/div[1]/nav/ul/li[3]/a"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[3]/div/div[2]/div/section/div/aside/section/div/div/div[1]/div[2]/div/div/div[1]/div/div/div/div/a/div"))).click();
+        try {
+            // Step 1: Locate and click the "My Courses" link in the navigation menu.
+            WebElement myCoursesLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/nav/div/div[1]/nav/ul/li[3]/a")));
+            myCoursesLink.click();
+            System.out.println("Navigated to 'My Courses' section.");
+
+            // Step 2: Locate and click the specific course link to access the course.
+            WebElement courseLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[3]/div/div[2]/div/section/div/aside/section/div/div/div[1]/div[2]/div/div/div[1]/div/div/div[1]/div/div[1]/div/div/a/span[3]/span[2]")));
+            String coursName = courseLink.getText();
+            courseLink.click();
+            System.out.println("Navigated to the: ("+coursName + ") Course.");
+        } catch (Exception e) {
+            System.err.println("Error navigating to the course: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void navigateToExtraTimeGroupAndFetchSize() {
         try {
-
             // Step 1: Click on "Participants"
             WebElement participantsMenu = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[2]/div[4]/div/div[2]/nav/ul/li[3]/a")));
             participantsMenu.click();
@@ -76,24 +92,14 @@ public class OpenMoodle {
             extraTimeGroup.click();
             System.out.println("Extra-Time Group selected.");
 
-            // Fetch group size immediately after selecting the group
-            fetchAndLogGroupSize();
+
         } catch (Exception e) {
             System.err.println("Error navigating to Extra-Time Group: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void fetchAndLogGroupSize() {
-        try {
-            WebElement groupSizeElement = wait.until(ExpectedConditions.presenceOfElementLocated(
-                    By.xpath("/html/body/div[2]/div[4]/div/div[3]/div/section/div/form/div/div/div[2]/div[1]/label/span[2]")
-            ));
-            String groupText = groupSizeElement.getText().trim();
-        } catch (Exception e) {
-            System.err.println("Error fetching group size: " + e.getMessage());
-        }
-    }
+
 
     public int getGroupSize() {
         try {
@@ -108,7 +114,7 @@ public class OpenMoodle {
                 int endIndex = groupText.indexOf(')');
                 String groupSizeStr = groupText.substring(startIndex, endIndex);
                 int groupSize = Integer.parseInt(groupSizeStr);
-                System.out.println("Group size: " + groupSize);
+                System.out.println("Extra-time group size is: " + groupSize);
                 return groupSize;
             } else {
                 throw new IllegalStateException("Unexpected group text format: " + groupText);
@@ -126,17 +132,57 @@ public class OpenMoodle {
         ));
         backToGroupsButton.click();
         System.out.println("Returned to Groups menu.");
+
     }
 
 
 
 
     public void removeStudentFromGroup() {
+        // Step 1: Click on the Add/Remove Users button
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='showaddmembersform']"))).click();
+        System.out.println("Add/Remove Users button clicked.");
+
+        // Step 2: Select the last user in the Group members list
         WebElement userInGroup = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[4]/div/div[3]/div/section/div/div/form/div/table/tbody/tr[1]/td[1]/div/select/optgroup/option[1]")));
         userInGroup.click();
+        String userName = userInGroup.getText();
+        System.out.println("Selected user to remove: " + userName);
+
+        // Step 3: Click on the Remove button to remove the user to the group
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='remove']"))).click();
+        System.out.println("Remove button clicked.");
     }
+
+    public void returnStudentBackToGroup() {
+        try {
+            // Step 1: Click on the Add/Remove Users button
+            WebElement addRemoveUsersButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//*[@id='showaddmembersform']")
+            ));
+            addRemoveUsersButton.click();
+            System.out.println("Add/Remove Users button clicked.");
+
+            // Step 2: Select the last user in the Potential members list
+            WebElement userInGroup = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[4]/div/div[3]/div/section/div/div/form/div/table/tbody/tr[1]/td[3]/div/select/optgroup[2]/option[1]")));
+            userInGroup.click();
+            String userName = userInGroup.getText();
+            System.out.println("Selected user to add back: " + userName);
+
+            // Step 3: Click on the Add button to move the user to the group
+            WebElement addButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//*[@id=\"add\"]")
+            ));
+            addButton.click();
+            System.out.println("User successfully added back to the group.");
+        } catch (Exception e) {
+            System.err.println("Error while returning the student back to the group: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     public int currentPage() {
         try {
@@ -144,8 +190,9 @@ public class OpenMoodle {
             WebElement test = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("/html/body/div[2]/div[4]/div/div[3]/div/section/div/div/div/ul/li[2]/div/div[2]/ul/li/div/div[2]/div[2]/div/div/a")
             ));
+            String testName = test.getText();
             test.click();
-            System.out.println("test opened");
+            System.out.println("Test: (" + testName + ") opened");
 
             // Step 2: Handle quiz attempt options
             WebElement attemptButton = wait.until(ExpectedConditions.elementToBeClickable(
@@ -171,6 +218,7 @@ public class OpenMoodle {
         return -1;
     }
 
+
     public int nextPage() {
         try {
             // Step 1: Click on Next Page button
@@ -184,16 +232,7 @@ public class OpenMoodle {
             System.out.println("Fetching new page number from URL...");
             String newUrl = driver.getCurrentUrl();
             int newPage = extractPageNumberFromUrl(newUrl);
-            System.out.println("New Page number: " + newPage);
-
-
-            // Step 3: Click on Previous Page button
-            WebElement previousPage = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("/html/body/div[2]/div[5]/div/div[2]/div/section/div[2]/form/div/div[2]/input[1]")
-            ));
-            previousPage.click();
-            System.out.println("navigated back to the previous page.");
-
+            System.out.println("New Page number caught and it is: " + newPage);
             return newPage;
 
         } catch (Exception e) {
@@ -201,6 +240,15 @@ public class OpenMoodle {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public void backToPreviousPage() {
+        // Click on Previous Page button
+        WebElement previousPage = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("/html/body/div[2]/div[5]/div/div[2]/div/section/div[2]/form/div/div[2]/input[1]")
+        ));
+        previousPage.click();
+        System.out.println("navigated back to the previous page.");
     }
 
 
