@@ -9,6 +9,8 @@ const xpaths = {
     searchInput: '//textarea[@aria-label="Search"]',
     searchButton: '//input[@aria-label="Google Search"]',
     feelingLuckyButton: '//input[@aria-label="I\'m Feeling Lucky"]'
+
+    
   }
 }
 
