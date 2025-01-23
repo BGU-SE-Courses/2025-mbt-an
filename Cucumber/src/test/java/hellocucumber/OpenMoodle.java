@@ -31,12 +31,12 @@ public class OpenMoodle {
             System.out.println("Login button clicked.");
 
             // Step 2: Locate the username input field and enter the username.
-            WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+            WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div/div/section/div/div/div/div/form[1]/div[1]/input")));
             usernameField.sendKeys(username);
             System.out.println("Entered username: "+username);
 
             // Step 3: Locate the password input field and enter the password.
-            WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+            WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div[2]/div/div/section/div/div/div/div/form[1]/div[2]/div/input")));
             passwordField.sendKeys(password);
             System.out.println("Entered password.");
 

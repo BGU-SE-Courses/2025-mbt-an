@@ -13,7 +13,9 @@ public class StepDefinitions {
     @Given("the user logs into Moodle as {string} with password {string}")
     public void theTeacherLogsIntoMoodleAs(String username, String password) {
         moodle = new OpenMoodle();
-        moodle.initSession("webdriver.chrome.driver", "../Selenium/chromedriver");
+        moodle.initSession("webdriver.chrome.driver", "../Selenium/chromedriver.exe");  // we used when we run on windows
+//        moodle.initSession("webdriver.chrome.driver", "../Selenium/chromedriver"); // we used when we run on mac
+
         moodle.login(username, password);
     }
 
