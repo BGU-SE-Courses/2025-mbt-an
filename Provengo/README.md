@@ -51,8 +51,8 @@ java -jar "C:\Program Files\Provengo\Provengo Cli\Provengo.uber.jar" sample --ov
  java -jar "C:\Program Files\Provengo\Provengo Cli\Provengo.uber.jar" ensemble --size 5 moodle  
 ```
 4. We repeated the last two steps, changing the two size parameters, until we were satisfied with the grade of the generated test suites.
-5. We copied the [ensemble.json](moodle/products/run-source/ensemble.json) file to [two-way.json](submission-files/domain-specific.json).
-6. We visualized the specification, and highlighted the traces in the optimized test suite create by the previous command and copied the output to [domain-specific.pdf](submission-files/domain-specific.pdf).
+5. We copied the [ensemble.json](moodle/products/run-source/ensemble.json) file to [two-way.json](submission-files/two-way.json).
+6. We visualized the specification, and highlighted the traces in the optimized test suite create by the previous command and copied the output to [two-way.pdf](submission-files/domain-specific.pdf).
 ```shell
 java -jar "C:\Program Files\Provengo\Provengo Cli\Provengo.uber.jar" analyze -f pdf --highlight products/run-source/ensemble.json moodle
 ```
